@@ -1,0 +1,112 @@
+#
+# SOEKRIS -- Configuration for a Soekris 4801 with a SafeNet crypto card.
+#
+# For more information on this file, please read the handbook section on
+# Kernel Configuration Files:
+#
+#    http://www.FreeBSD.org/doc/en_US.ISO8859-1/books/handbook/kernelconfig-config.html
+#
+# Original credit comes to http://www.wirelessleiden.nl/projects/nodefactory/browser/hybrid/branches/releng-10/nanobsd/cfg/kernel.wleiden
+#
+cpu             I486_CPU
+cpu             I586_CPU
+ident           SOEKRIS
+# Uncomment if you like to compile a debugging kernel
+#makeoptions    DEBUG=-g                # Build kernel with gdb(1) debug symbols
+#options        KDB                     # Kernel debugger related code
+#options        KDB_TRACE               # Print a stack trace for a panic
+#options        STACK                   # stack(9) support
+options         CPU_ELAN
+options         CPU_SOEKRIS             # Some units are Soekris Machines.
+options         CPU_GEODE               # net4801 requirement
+options         HZ=250                  # Because ofthe "ELAN" timecounter.
+options         DEVICE_POLLING          # Make our (old board) sis(4) faster.
+options         NO_SWAPPING             # Embedded Machines.
+options         SW_WATCHDOG             # Remote emergency reboots.
+options         ROUTETABLES=6           # Multiple routing table support
+# To statically compile in device wiring instead of /boot/device.hints
+#hints          "GENERIC.hints"         # Default places to look for devices.
+options         SCHED_ULE               # ULE scheduler
+options         PREEMPTION              # Enable kernel thread preemption
+options         INET                    # InterNETworking
+options         INET6                   # IPv6 communications protocols
+options         SCTP                    # Stream Control Transmission Protocol
+options         FFS                     # Berkeley Fast Filesystem
+options         SOFTUPDATES             # Enable FFS soft updates support
+options         PSEUDOFS                # Pseudo-filesystem framework
+options         GEOM_LABEL              # Provides labelization
+options         KTRACE                  # ktrace(1) support
+options         SYSVSHM                 # SYSV-style shared memory
+options         SYSVMSG                 # SYSV-style message queues
+options         SYSVSEM                 # SYSV-style semaphores
+options         _KPOSIX_PRIORITY_SCHEDULING # POSIX P1003_1B real-time extensions
+options         KBD_INSTALL_CDEV        # install a CDEV entry in /dev
+options         INCLUDE_CONFIG_FILE     # Include this file in kernel
+# Bus support.
+device          eisa
+device          pci
+# ATA controllers
+device          ahci            # AHCI-compatible SATA controllers
+device          ata             # Legacy ATA/SATA controllers
+#options        ATA_CAM         # Handle legacy controllers with CAM
+options         ATA_STATIC_ID   # Static device numbering
+# ATA/SCSI peripherals
+device          scbus           # SCSI bus (required for ATA/SCSI)
+device          da              # Direct Access (disks)
+# Add suspend/resume support for the i8254.
+device          pmtimer
+# PCCARD (PCMCIA) support
+# PCMCIA and cardbus bridge support
+device          cbb             # cardbus (yenta) bridge
+device          pccard          # PC Card (16-bit) bus
+device          cardbus         # CardBus (32-bit) bus
+# Serial (COM) ports
+device          uart            # Generic UART driver
+# PCI Ethernet NICs that use the common MII bus controller code.
+# NOTE: Be sure to keep the 'device miibus' line in order to use these NICs!
+device          miibus          # MII bus support
+device          vr              # VIA Rhine, Rhine II
+device          sis             # SiS 900/SiS 7016
+# Pseudo devices.
+device          loop            # Network loopback
+device          random          # Entropy device
+device          ether           # Ethernet support
+device          vlan            # 802.1Q VLAN support
+device          tun             # Packet tunnel.
+device          pty             # BSD-style compatibility pseudo ttys
+device          md              # Memory "disks"
+device          gif             # IPv6 and IPv4 tunneling
+device          faith           # IPv6-to-IPv4 relaying (translation)
+device          firmware        # firmware assist module
+# The `bpf' device enables the Berkeley Packet Filter.
+# Be aware of the administrative consequences of enabling this!
+# Note that 'bpf' is required for DHCP.
+device          bpf             # Berkeley packet filter
+# USB support
+options         USB_DEBUG       # enable debug msgs
+device          uhci            # UHCI PCI->USB interface
+device          ohci            # OHCI PCI->USB interface
+device          ehci            # EHCI PCI->USB interface (USB 2.0)
+device          xhci            # XHCI PCI->USB interface (USB 3.0)
+device          usb             # USB Bus (required)
+device          umass           # Disks/Mass storage - Requires scbus and da
+# Authentication, encryption and protection on network layer
+device          enc                     #IPsec interface
+device          crypto                  # core crypto support
+device          cryptodev               # /dev/crypto for access to h/w
+device          pf                      #PF OpenBSD packet-filter firewall
+device          pflog                   #logging support interface for PF
+options         IPSEC                   #IP security (requires device crypto)
+options         IPSEC_FILTERTUNNEL      #filter ipsec packets from a tunnel
+# Allow combining interfaces
+device          if_bridge
+# Needed for VPN and other alternative tunnels
+device          tap
+# In case we like to limit and play more clever with inet traffic and running
+# queues and such.
+options         ALTQ
+options         ALTQ_CBQ        # Class Bases Queuing (CBQ)
+options         ALTQ_RED        # Random Early Detection (RED)
+options         ALTQ_RIO        # RED In/Out
+options         ALTQ_HFSC       # Hierarchical Packet Scheduler (HFSC)
+options         ALTQ_PRIQ       # Priority Queuing (PRIQ)
